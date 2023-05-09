@@ -1,0 +1,7 @@
+compressed
+images
+node_modules
+.idea
+compressed-folder.zip
+server/positive.json
+*.db

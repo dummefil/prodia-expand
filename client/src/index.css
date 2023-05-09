@@ -1,0 +1,272 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  display: flex;
+  height: 100vh;
+  margin: 0;
+  background-color: #f5f5f5;
+  padding: 20px;
+  overflow: hidden;
+}
+
+form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 300px;
+  height: 100%;
+  padding: 20px;
+  background-color: white;
+  border-right: 1px solid #eee;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+input, button {
+  width: 100%;
+  border-radius: 4px;
+}
+
+button {
+  position: relative;
+  grid-column: 1 / -1;
+  background-color: #2196f3;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 1rem;
+}
+
+input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #1976d2;
+}
+
+button #timer {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.main-container {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+.form-container {
+  position: sticky;
+  top: 20px;
+}
+
+#image-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 10px;
+  overflow: auto;
+}
+
+img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+#error-container {
+  margin: 1rem 0;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  color: #842029;
+  font-size: 1rem;
+  padding: 1rem;
+  text-align: center;
+}
+
+button:disabled {
+  background-color: #b3cde0;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  background-color: #b3cde0;
+}
+
+#timer {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #444;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+#modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 800px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1001;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.modal-footer {
+  padding: 16px;
+  background-color: #f1f1f1;
+}
+
+.modal-body {
+  position: relative;
+  flex-grow: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.modal-images-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.modal-close-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  border: none;
+  background: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1;
+  width: auto;
+}
+
+.modal-close-btn:hover {
+  background: none;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-prev-btn,
+.modal-next-btn,
+.modal-autoscroll-btn {
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+label {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Loop checkbox styles */
+#loop-checkbox {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  transition: background-color 0.2s;
+}
+
+#loop-checkbox:checked {
+  background-color: #007BFF;
+}
+
+#loop-checkbox:checked::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  position: relative;
+  top: 1px;
+  left: 4px;
+}

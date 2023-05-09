@@ -1,0 +1,28 @@
+{
+  "name": "prodia-expand",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "../node_modules/.bin/nodemon .",
+    "clean": "node scripts/cleanDuplicates.js",
+    "compress": "node scripts/multiCompress.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@fastify/formbody": "^7.4.0",
+    "@fastify/static": "^6.10.1",
+    "archiver": "^5.3.1",
+    "fastify": "^4.15.0",
+    "generic-pool": "^3.9.0",
+    "imagemin": "^8.0.1",
+    "imagemin-pngquant": "^9.0.2",
+    "node-fetch": "^3.3.1",
+    "nodemon": "^2.0.22",
+    "pino": "^8.14.1",
+    "puppeteer": "^19.9.1",
+    "sqlite3": "^5.1.6"
+  }
+}
