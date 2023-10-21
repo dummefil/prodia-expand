@@ -6,8 +6,21 @@ const generatePositiveValues = require("./generatePositiveValues");
 const generateImages = require('./generateImages');
 const logger = require('./logger');
 
+
 const db = require('./database');
 const createHistoryWithImages = require("./createHistoryWithImages");
+
+fastify.register(require('@fastify/cors'), (instance) => {
+    return (req, callback) => {
+        const corsOptions = {
+            // This is NOT recommended for production as it enables reflection exploits
+            origin: !/^localhost$/m.test(req.headers.origin)
+        };
+
+        // callback expects two parameters: error and options
+        callback(null, corsOptions)
+    }
+})
 
 fastify.register(require('@fastify/formbody'));
 fastify.register(require('@fastify/static'), {

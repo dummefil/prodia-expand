@@ -337,9 +337,23 @@ input[type="checkbox"] {
   left: 4px;
 }
 
-#positive {
+textarea {
   width: 100%;
   max-width: 100%;
   min-width: 100%;
   min-height: 31px;
+}
+
+.image-container {
+  width: 100%;
+  position: relative;
+}
+
+.use-prompt {
+  position: absolute;
+  margin: 0;
+  top: 6px;
+  left: 6px;
+  width: 24px;
+  height: 24px;
 }

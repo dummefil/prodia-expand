@@ -9,33 +9,32 @@ const FormComponent = ({
                            resetFields,
                            timer,
                            error,
-                           debug,
                            fields,
-                           handleFieldChange
+                           setFields
                        }) => {
     return (
         <div className="form-container">
             <form id="settings-form" onSubmit={handleSubmit}>
                 <label htmlFor="positive" >Positive:</label>
-                <textarea id="positive" value={fields.positive} onChange={handleFieldChange}></textarea>
+                <textarea id="positive" value={fields.positive} onChange={setFields}></textarea>
 
                 <label htmlFor="negative">Negative:</label>
-                <input type="text" id="negative" value={fields.negative} onChange={handleFieldChange}/>
+                <textarea type="text" id="negative" value={fields.negative} onChange={setFields}/>
 
                 <label htmlFor="cfgScale">CFG Scale:</label>
-                <input type="text" id="cfgScale" value={fields.cfgScale} onChange={handleFieldChange}/>
+                <input type="text" id="cfgScale" value={fields.cfgScale} onChange={setFields}/>
 
                 <label htmlFor="steps">Steps:</label>
-                <input type="text" id="steps" value={fields.steps} onChange={handleFieldChange}/>
+                <input type="text" id="steps" value={fields.steps} onChange={setFields}/>
 
                 <label htmlFor="seed">Seed:</label>
-                <input type="text" id="seed" value={fields.seed} onChange={handleFieldChange}/>
+                <input type="text" id="seed" value={fields.seed} onChange={setFields}/>
 
                 <label htmlFor="count">Instances:</label>
-                <input type="number" id="count" value={fields.count} onChange={handleFieldChange}/>
+                <input type="number" id="count" value={fields.count} onChange={setFields}/>
 
                 <label>
-                    <input type="checkbox" id="loop" checked={fields.loop} onChange={handleFieldChange}/>
+                    <input type="checkbox" id="loop" checked={fields.loop} onChange={setFields}/>
                     Enable Loop
                 </label>
 
@@ -55,9 +54,8 @@ const FormComponent = ({
                 {error && <div id="error-container"><p className="error-message">{error}</p></div>}
                 <br/>
                 <br/>
-                <pre style={{overflow: 'auto'}}>{JSON.stringify(debug, null, 4)}</pre>
+                {/*<pre style={{overflow: 'auto'}}>{JSON.stringify(debug, null, 4)}</pre>*/}
             </form>
-
         </div>
     );
 };

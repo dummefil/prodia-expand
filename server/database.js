@@ -1,7 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('image_metadata.db');
+const db = new sqlite3.Database('./image_metadata.db');
 
-//initialize image table
 db.run(`
   CREATE TABLE IF NOT EXISTS images (
     id INTEGER PRIMARY KEY,
@@ -23,7 +22,6 @@ db.run(`
     model TEXT
 )`);
 
-//initialize positive_values table
 db.run(`
   CREATE TABLE IF NOT EXISTS positive_values (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

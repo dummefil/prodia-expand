@@ -18,8 +18,13 @@ const defaultFields = {
 function useFormFields(initialState) {
     const [fields, setValues] = useState(initialState);
 
-    const handleFieldChange = (event) => {
-        const { target} = event;
+    const setFields = (data) => {
+        if (!data.target) {
+            setValues(data)
+            return;
+        }
+
+        const { target} = data;
         const  { id } = target;
         const value = target.getAttribute && target.getAttribute('type') === 'checkbox' ? target.checked : target.value;
 
@@ -33,7 +38,7 @@ function useFormFields(initialState) {
         setValues(initialState);
     };
 
-    return [fields, handleFieldChange, resetFields];
+    return [fields, setFields, resetFields];
 }
 
 
@@ -44,10 +49,9 @@ const ImageApp = () => {
     const [timer, setTimer] = useState(0);
     const [modalWindowOpen, setModalWindowOpen] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(null);
-    const [debug, setDebug] = useState(null);
     const [lastFields, setLastFields] = useState({});
-    const [fields, handleFieldChange, resetFields] = useFormFields(defaultFields);
-
+    const [fields, setFields, resetFields] = useFormFields(defaultFields);
+    const [ prompt, setPrompt ] = useState();
     const request = useCallback(async () => {
         const startTime = performance.now();
         try {
@@ -59,11 +63,14 @@ const ImageApp = () => {
             }
 
             setImages((prevImages) => [...prevImages, ...data.images]);
-            setDebug(data);
             setLastFields({
                 ...fields,
                 positive: fields.positive || data.prompt,
             });
+            if (data.prompt) {
+                setPrompt(data.prompt);
+            }
+
         } catch (error) {
             setError(error.message);
         } finally {
@@ -88,11 +95,10 @@ const ImageApp = () => {
     const repeatLastFields = useCallback((event) => {
         event.stopPropagation();
         event.preventDefault();
-        handleFieldChange({ target: { id: 'positive', value: lastFields.positive || '' } });
-    }, [request, handleFieldChange, lastFields.positive]);
+        setFields({ target: { id: 'positive', value: lastFields.positive || '' } });
+    }, [request, setFields, lastFields.positive]);
 
-    const handleSubmit = useCallback(
-        (event) => {
+    const handleSubmit = useCallback(        (event) => {
             event.preventDefault();
             request();
         },
@@ -122,11 +128,10 @@ const ImageApp = () => {
                 resetFields={handleResetFilters}
                 timer={timer}
                 error={error}
-                debug={debug}
                 fields={fields}
-                handleFieldChange={handleFieldChange}
+                setFields={setFields}
             />
-            <ImageContainer images={images} openModal={openModal} />
+            <ImageContainer images={images} openModal={openModal} setFields={()=> setFields({...fields, positive: prompt })} />
             {modalWindowOpen && <Modal closeModal={closeModal} images={images} index={currentImageIndex} autoScroll={fields.loop} />}
         </div>
     );
