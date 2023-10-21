@@ -1,11 +1,11 @@
 const logger = require('./logger');
-const submitGeneration = async (prompt, negativePrompt, cfg, steps, seed) => {
+const submitGeneration = async (prompt, negativePrompt, cfg, steps, seed, model) => {
     try {
         const params = new URLSearchParams({
             new: true,
-            prompt: '(masterpiece:1.3), (best quality), (highres:1.1), ((absurdres)), (incredibly detailed), nude ' + prompt,
-            model: 'anything-v4.5-pruned.ckpt [65745d25]',
+            prompt,
             negative_prompt: negativePrompt,
+            model,
             steps,
             cfg,
             seed,

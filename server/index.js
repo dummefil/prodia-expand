@@ -7,6 +7,7 @@ const generateImages = require('./generateImages');
 const logger = require('./logger');
 
 const db = require('./database');
+const createHistoryWithImages = require("./createHistoryWithImages");
 
 fastify.register(require('@fastify/formbody'));
 fastify.register(require('@fastify/static'), {
@@ -14,7 +15,7 @@ fastify.register(require('@fastify/static'), {
 });
 
 fastify.post('/save', async (req, reply) => {
-    const { id, positive, negative } = req.body;
+    const {id, positive, negative} = req.body;
     const path = `/public/images/${id}.png`;
     const size = fs.statSync(path).size;
 
@@ -24,18 +25,20 @@ fastify.post('/save', async (req, reply) => {
         function (err) {
             if (err) {
                 console.error(err);
-                reply.status(500).send({ error: 'Failed to save image metadata.' });
+                reply.status(500).send({error: 'Failed to save image metadata.'});
             } else {
-                reply.send({ success: true });
+                reply.send({success: true});
             }
         }
     );
 });
 
+
+
 fastify.post('/fetch-images', async (req, reply) => {
     try {
-        const {body  } = req;
-        let { positive } = body;
+        const {body} = req;
+        let {positive} = body;
         const {negative, cfgScale, steps, seed, count} = body;
 
         if (!positive) {
@@ -46,7 +49,21 @@ fastify.post('/fetch-images', async (req, reply) => {
 
         const errors = [];
         //todo populate errors :)
-        const images = await generateImages(count, positive, negative, cfgScale, steps, seed)
+
+        positive = '(best quality), (highres:1.1), ' + positive;
+        const model =  'anything-v4.5-pruned.ckpt [65745d25]';
+        const images = await generateImages(count, positive, negative, cfgScale, steps, seed, model)
+
+        const historyData = {
+            prompt: positive,
+            negativePrompt: negative,
+            cfgScale,
+            steps,
+            seed,
+            model
+        }
+
+        await createHistoryWithImages(db, historyData, images);
 
         reply.type('application/json').code(200);
         return {
@@ -88,7 +105,7 @@ fastify.get('/latest', async (request, reply) => {
 
 const start = async () => {
     try {
-        await fastify.listen(3001);
+        await fastify.listen({port: 3001, host: '0.0.0.0'});
     } catch (err) {
         fastify.log.error(err);
         process.exit(1);

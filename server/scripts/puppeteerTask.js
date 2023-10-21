@@ -51,8 +51,6 @@ async function type(page, selector, value) {
 
     await page.bringToFront();
     await page.evaluate(async () => {
-
-        console.log(navigator.clipboard, value);
         await navigator.clipboard.writeText(value);
     });
 

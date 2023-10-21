@@ -6,12 +6,22 @@ db.run(`
   CREATE TABLE IF NOT EXISTS images (
     id INTEGER PRIMARY KEY,
     path TEXT NOT NULL,
-    positive TEXT,
-    negative TEXT,
-    size INTEGER,
+    history_id INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
 `);
+
+db.run(`
+  CREATE TABLE IF NOT EXISTS history (
+    id INTEGER PRIMARY KEY,
+    prompt TEXT,
+    negativePrompt TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    cfgScale INTEGER,
+    steps INTEGER,
+    seed INTEGER,
+    model TEXT
+)`);
 
 //initialize positive_values table
 db.run(`

@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect, useState} from 'react';
 
-export default function Modal({ images, index, closeModal }) {
+export default function Modal({ images, index, closeModal, autoScroll }) {
 
-    const [autoScrollEnabled, setAutoScrollEnabled] = useState(false);
+    const [autoScrollEnabled, setAutoScrollEnabled] = useState(autoScroll);
     const [currentImageIndex, setCurrentImageIndex] = useState(index);
     const currentImage = images[currentImageIndex];
 
-    const leftButtonDisabled = currentImageIndex === 0;
-    const rightButtonDisabled = currentImageIndex === images.length - 1;
+    const imagesToTheRight = currentImageIndex === 0;
+    const imagesToTheLeft = currentImageIndex === images.length - 1;
 
     const startAutoScroll = () => {
         setAutoScrollEnabled(true)
@@ -17,13 +17,17 @@ export default function Modal({ images, index, closeModal }) {
     }
 
     const changeImage = useCallback((delta) => {
+        const cannotChange = (delta === -1 && imagesToTheRight) || (delta === 1 && imagesToTheLeft);
+        if (cannotChange) {
+            return;
+        }
         const newIndex = (currentImageIndex + delta + images.length) % images.length;
         setCurrentImageIndex(newIndex);
     }, [currentImageIndex, images.length]);
 
     useEffect(() => {
         if (autoScrollEnabled) {
-            const interval = setInterval(() => changeImage(1), 2000);
+            const interval = setInterval(() => changeImage(1), 1000);
             return () => clearInterval(interval);
         }
     }, [autoScrollEnabled, currentImageIndex, changeImage]);
@@ -42,10 +46,10 @@ export default function Modal({ images, index, closeModal }) {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button className="modal-prev-btn" onClick={() => changeImage(-1)} disabled={leftButtonDisabled}>
+                        <button className="modal-prev-btn" onClick={() => changeImage(-1)} disabled={imagesToTheRight}>
                             &lt;
                         </button>
-                        <button className="modal-next-btn" onClick={() => changeImage(1)} disabled={rightButtonDisabled}>
+                        <button className="modal-next-btn" onClick={() => changeImage(1)} disabled={imagesToTheLeft}>
                             &gt;
                         </button>
                         <button className="modal-autoscroll-btn" onClick={autoScrollEnabled ? stopAutoScroll : startAutoScroll}>
