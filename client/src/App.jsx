@@ -70,7 +70,7 @@ const ImageApp = () => {
             if (data.prompt) {
                 setPrompt(data.prompt);
             }
-
+            setError(null);
         } catch (error) {
             setError(error.message);
         } finally {

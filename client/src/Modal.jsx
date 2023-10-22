@@ -27,7 +27,7 @@ export default function Modal({ images, index, closeModal, autoScroll }) {
 
     useEffect(() => {
         if (autoScrollEnabled) {
-            const interval = setInterval(() => changeImage(1), 1000);
+            const interval = setInterval(() => changeImage(1), 2000);
             return () => clearInterval(interval);
         }
     }, [autoScrollEnabled, currentImageIndex, changeImage]);
