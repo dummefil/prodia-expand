@@ -42,7 +42,7 @@ export default function Modal({ images, index, closeModal, autoScroll }) {
                     </button>
                     <div className="modal-body">
                         <div className="modal-images-container">
-                            <img src={currentImage} alt="" />
+                            <img src={currentImage.url} alt="" />
                         </div>
                     </div>
                     <div className="modal-footer">

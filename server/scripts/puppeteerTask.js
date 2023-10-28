@@ -26,7 +26,7 @@ const poolFactory = {
 }
 
 const poolOpts = {
-    max: 4, // Maximum number of Puppeteer instances in the pool
+    max: 16, // Maximum number of Puppeteer instances in the pool
     min: 0, // Minimum number of Puppeteer instances in the pool
 }
 
@@ -72,8 +72,8 @@ async function selectModelVersion(page) {
     await page.evaluate(() => {
         const modelSelect = document.querySelector('select.select-model');
         const options = Array.from(modelSelect.options);
-        const selectedOption = options.find(option => option.value.includes('anything-v4.5'));
-
+        const selectedOption = options.find(option => option.value.includes('anything-v5'));
+        console.log(selectedOption);
         if (selectedOption) {
             modelSelect.value = selectedOption.value;
 

@@ -1,10 +1,12 @@
 import React from 'react';
 
 const Image = ({ image, openModal, setFields }) => {
+    const { url, params } = image;
     return <div className="image-container">
-        <button className="use-prompt" onClick={setFields}></button>
+        {/*<button className="use-prompt" onClick={setFields}></button>*/}
         <img
-            src={image}
+            data-json={params.prompt}
+            src={url}
             className="generated-image"
             onClick={openModal}
         />
@@ -12,9 +14,14 @@ const Image = ({ image, openModal, setFields }) => {
 }
 
 const ImageContainer = ({ images, openModal, setFields }) => {
+
     return (
         <div id="image-container">
-            {images.map((image, index) => <Image key={image} openModal={() => openModal(index)} image={image} setFields={setFields}/>)}
+            {
+                images.map((image, index) => {
+                    return <Image key={image.url} openModal={() => openModal(index)} image={image}/>;
+                })
+            }
         </div>
     );
 };

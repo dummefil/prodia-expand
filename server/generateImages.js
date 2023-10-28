@@ -1,10 +1,12 @@
 const logger = require('./logger');
-const submitGeneration = async (prompt, negativePrompt, cfg, steps, seed, model) => {
+const generatePositiveValues = require("./generatePositiveValues");
+const db = require("./database");
+const submitGeneration = async ({prompt, negative, cfg, steps, seed, model}) => {
     try {
         const params = new URLSearchParams({
             new: true,
             prompt,
-            negative_prompt: negativePrompt,
+            negative_prompt: negative,
             model,
             steps,
             cfg,
@@ -63,12 +65,23 @@ const checkGeneration = async (jobId) => {
     }
 };
 
-const start = async (count, ...args) => {
+const start = async (count, args) => {
     const promises = [];
     const startTime = performance.now();
 
+    console.log(args);
+
     for (let i = 0; i < count; i++) {
-        promises.push(submitGeneration(...args).then(({job}) => checkGeneration(job)));
+        const prompt = '(best quality), (highres:1.1), explicit,' + (args.prompt ? args.prompt : await generatePositiveValues(20, db));
+        const options = {
+            ...args,
+            prompt,
+        }
+
+        promises.push(submitGeneration(options)
+            .then(({job}) => checkGeneration(job))
+            .then((data) => ({ ...data }))
+        );
     }
 
     logger.info(`Started ${count} generation jobs.`);
@@ -80,7 +93,9 @@ const start = async (count, ...args) => {
     logger.info(`${timeElapsed} time elapsed.`);
 
     return completedJobs.map((data) => {
-        return `https://images.prodia.xyz/${data.job}.png`;
+        return {
+            ...data,
+            url: `https://images.prodia.xyz/${data.job}.png` };
     })
 };
 

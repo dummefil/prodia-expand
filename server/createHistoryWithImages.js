@@ -43,6 +43,17 @@ const insertImage = async (db, imageData, history_id) => {
     await run(INSERT_IMAGE_QUERY, [...Object.values(imageData), history_id]);
 };
 
+
+const createHistoryWithImage = async (db, historyData, image) => {
+    try {
+        const history_id = await insertHistory(db, historyData);
+        await insertImage(db, {image}, history_id);
+
+        console.log(`History inserted successfully.`);
+    } catch (error) {
+        console.error('Error inserting history:', error);
+    }
+};
 const createHistoryWithImages = async (db, historyData, images) => {
     try {
         const history_id = await insertHistory(db, historyData);
@@ -52,8 +63,8 @@ const createHistoryWithImages = async (db, historyData, images) => {
 
         console.log(`History and images inserted successfully.`);
     } catch (error) {
-        console.error('Error updating positive values:', error);
+        console.error('Error inserting inserting history:', error);
     }
 };
 
-module.exports = createHistoryWithImages;
+module.exports = {createHistoryWithImage, createHistoryWithImages};

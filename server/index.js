@@ -8,7 +8,7 @@ const logger = require('./logger');
 
 
 const db = require('./database');
-const createHistoryWithImages = require("./createHistoryWithImages");
+const {createHistoryWithImage} = require("./createHistoryWithImages");
 
 fastify.register(require('@fastify/cors'), (instance) => {
     return (req, callback) => {
@@ -55,35 +55,24 @@ fastify.post('/fetch-images', async (req, reply) => {
         const {negative, cfgScale, steps, seed, count} = body;
 
         if (!positive) {
-            positive = await generatePositiveValues(20, db);
-        } else {
             await collectPositiveValues(positive, db);
         }
 
         const errors = [];
         //todo populate errors :)
 
-        positive = '(best quality), (highres:1.1), ' + positive;
         const model =  'anything-v4.5-pruned.ckpt [65745d25]';
-        const images = await generateImages(count, positive, negative, cfgScale, steps, seed, model)
+        const imagesData = await generateImages(count, {prompt: positive, negative, cfgScale, steps, seed, model})
 
-        const historyData = {
-            prompt: positive,
-            negativePrompt: negative,
-            cfgScale,
-            steps,
-            seed,
-            model
-        }
-
-        await createHistoryWithImages(db, historyData, images);
+        // await Promise.all(imagesData.map((historyData) => {
+        //     return createHistoryWithImage(db, historyData, {image: historyData.url});
+        // }))
 
         reply.type('application/json').code(200);
         return {
-            images,
+            images: imagesData,
             error: null,
-            errors,
-            prompt: positive
+            errors
         };
     } catch (error) {
         console.error('Error generating images:', error);
