@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "../node_modules/.bin/nodemon .",
+    "start": "bun --watch .",
     "clean": "node scripts/cleanDuplicates.js",
     "compress": "node scripts/multiCompress.js"
   },

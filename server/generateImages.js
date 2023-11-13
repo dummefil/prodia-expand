@@ -1,26 +1,24 @@
 const logger = require('./logger');
 const generatePositiveValues = require("./generatePositiveValues");
 const db = require("./database");
-const submitGeneration = async ({prompt, negative, cfg, steps, seed, model}) => {
+const {request, imageUrl, POST_METHOD} = require("./api/request");
+const submitGeneration = async ({prompt, negative, cfgScale, steps, seed}) => {
     try {
-        const params = new URLSearchParams({
-            new: true,
+        const body = {
             prompt,
             negative_prompt: negative,
-            model,
-            steps,
-            cfg,
-            seed,
-            sampler: 'Euler',
-            aspect_ratio: 'landscape',
-            upscale: '2'
-        });
+            model: 'anythingV5_PrtRE.safetensors [893e49b9]',
+            steps: parseInt(steps),
+            cfg_scale: parseInt(cfgScale),
+            seed: parseInt(seed),
+            sampler: 'DPM++ 2M Karras',
+            upscale: true
+        }
 
-        const url = `https://api.prodia.com/generate?${params.toString()}`;
-
-        logger.info(`Submitting generation request for url: ${url}`);
-        const response = await fetch(url);
-        const data = await response.json();
+        const path = `/sd/generate`;
+        logger.info(`Submitting generation request for url: ${path}`);
+        const data = await request(path, { method: POST_METHOD, body });
+        console.log(data);
         logger.info(`Generation request submitted with jobId: ${data.job}`);
         return data;
     } catch (error) {
@@ -35,18 +33,17 @@ const sleep = (seconds) => {
     });
 };
 
-const checkGeneration = async (jobId) => {
+const checkGeneration = async (jobId,options) => {
     try {
-        const url = `https://api.prodia.com/job/${jobId}`;
+        const path = `/job/${jobId}`;
         logger.info(`Checking generation status for jobId: ${jobId}`);
-        const response = await fetch(url);
-        const data = await response.json();
+        const data = await request(path);
 
-        const {status} = data;
+        const { status } = data;
 
         if (status === 'failed') {
             logger.info(`Job ${jobId} failed. Resubmitting.`);
-            const {job} = await submitGeneration();
+            const { job } = await submitGeneration(options);
             return checkGeneration(job);
         }
 
@@ -69,17 +66,15 @@ const start = async (count, args) => {
     const promises = [];
     const startTime = performance.now();
 
-    console.log(args);
-
     for (let i = 0; i < count; i++) {
-        const prompt = '(best quality), (highres:1.1), explicit,' + (args.prompt ? args.prompt : await generatePositiveValues(20, db));
+        const prompt = '(best quality), (highres:1.1),' + (args.prompt ? args.prompt : await generatePositiveValues(20, db));
         const options = {
             ...args,
             prompt,
         }
 
         promises.push(submitGeneration(options)
-            .then(({job}) => checkGeneration(job))
+            .then(({job}) => checkGeneration(job, options))
             .then((data) => ({ ...data }))
         );
     }
@@ -94,8 +89,8 @@ const start = async (count, args) => {
 
     return completedJobs.map((data) => {
         return {
-            ...data,
-            url: `https://images.prodia.xyz/${data.job}.png` };
+            ...data
+        };
     })
 };
 

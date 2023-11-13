@@ -8,11 +8,12 @@
   ],
   "scripts": {
     "dev": "concurrently \"cd ./server && yarn start\" \"cd ./client && yarn start\"",
+    "dev:bun": "concurrently 'cd ./server && bun run start' 'cd ./client && bun run start'",
     "dev:win": "concurrently \"cd ./server & yarn start\" \"cd ./client & yarn start\""
   },
   "devDependencies": {
     "concurrently": "^8.0.1",
     "cross-env": "^7.0.3"
   },
-  "dependencies": {}
+  "dependencies": { "axios": "^1.6.1" }
 }

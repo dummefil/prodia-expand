@@ -9,6 +9,7 @@ const logger = require('./logger');
 
 const db = require('./database');
 const {createHistoryWithImage} = require("./createHistoryWithImages");
+const {imageUrl} = require("./api/request");
 
 fastify.register(require('@fastify/cors'), (instance) => {
     return (req, callback) => {
@@ -26,6 +27,9 @@ fastify.register(require('@fastify/formbody'));
 fastify.register(require('@fastify/static'), {
     root: path.join(__dirname, 'public'),
 });
+
+
+
 
 fastify.post('/save', async (req, reply) => {
     const {id, positive, negative} = req.body;
@@ -61,8 +65,7 @@ fastify.post('/fetch-images', async (req, reply) => {
         const errors = [];
         //todo populate errors :)
 
-        const model =  'anything-v4.5-pruned.ckpt [65745d25]';
-        const imagesData = await generateImages(count, {prompt: positive, negative, cfgScale, steps, seed, model})
+        const imagesData = await generateImages(count, {prompt: positive, negative, cfgScale, steps, seed})
 
         // await Promise.all(imagesData.map((historyData) => {
         //     return createHistoryWithImage(db, historyData, {image: historyData.url});
