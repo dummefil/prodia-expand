@@ -2,9 +2,11 @@ import React from 'react';
 
 const Image = ({ image, openModal, setFields }) => {
     const { imageUrl } = image;
+    console.log(image);
     return <div className="image-container">
         {/*<button className="use-prompt" onClick={setFields}></button>*/}
         <img
+            loading="lazy"
             // data-json={params.prompt}
             src={imageUrl}
             className="generated-image"

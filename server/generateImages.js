@@ -8,6 +8,7 @@ const submitGeneration = async ({prompt, negative, cfgScale, steps, seed}) => {
             prompt,
             negative_prompt: negative,
             model: 'anythingV5_PrtRE.safetensors [893e49b9]',
+            // model: 'anything-v4.5-pruned.ckpt [65745d25]',
             steps: parseInt(steps),
             cfg_scale: parseInt(cfgScale),
             seed: parseInt(seed),
@@ -18,7 +19,6 @@ const submitGeneration = async ({prompt, negative, cfgScale, steps, seed}) => {
         const path = `/sd/generate`;
         logger.info(`Submitting generation request for url: ${path}`);
         const data = await request(path, { method: POST_METHOD, body });
-        console.log(data);
         logger.info(`Generation request submitted with jobId: ${data.job}`);
         return data;
     } catch (error) {
@@ -36,7 +36,7 @@ const sleep = (seconds) => {
 const checkGeneration = async (jobId,options) => {
     try {
         const path = `/job/${jobId}`;
-        logger.info(`Checking generation status for jobId: ${jobId}`);
+        // logger.info(`Checking generation status for jobId: ${jobId}`);
         const data = await request(path);
 
         const { status } = data;
@@ -49,7 +49,7 @@ const checkGeneration = async (jobId,options) => {
 
         if (status !== 'succeeded') {
             const time = 0.5;
-            logger.info(`Job ${jobId} still queued. Sleeping for ${time} seconds and retrying.`);
+            // logger.info(`Job ${jobId} still queued. Sleeping for ${time} seconds and retrying.`);
             await sleep(time);
             return checkGeneration(jobId);
         }
@@ -66,8 +66,10 @@ const start = async (count, args) => {
     const promises = [];
     const startTime = performance.now();
 
+    let c = parseInt(count);
     for (let i = 0; i < count; i++) {
         const prompt = '(best quality), (highres:1.1),' + (args.prompt ? args.prompt : await generatePositiveValues(20, db));
+        // const prompt = '(best quality), (highres:1.1),' + args.prompt +', ' + await generatePositiveValues(20, db);
         const options = {
             ...args,
             prompt,
@@ -75,6 +77,15 @@ const start = async (count, args) => {
 
         promises.push(submitGeneration(options)
             .then(({job}) => checkGeneration(job, options))
+            .then((data) => {
+                c = c- 1
+                if (c === 0) {
+                    logger.info(`Done processing ${count} tasks`);
+                } else {
+                    logger.info(`Still waiting on ${c} task${c > 1 ? 's' : ''}`)
+                }
+                return data;
+            })
             .then((data) => ({ ...data }))
         );
     }
